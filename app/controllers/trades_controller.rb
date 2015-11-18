@@ -1,5 +1,4 @@
 class TradesController < ApplicationController
-  before_action :force_session
   before_action :set_trade, only: [:edit, :update, :execute, :destroy]
 
 
@@ -16,7 +15,7 @@ class TradesController < ApplicationController
 
     @recent_trades = Trade.where(candidate_id: @candidate.id).order(executed_at: :desc).limit(10)
 
-    @user_offers = TradeOffer.where(offerer_id: session[:user_id], candidate_id: @candidate.id)
+    @user_offers = TradeOffer.where(closed_at: nil, offerer_id: session[:user_id], candidate_id: @candidate.id)
 
     @bids = TradeOffer.where(closed_at: nil, candidate_id:@candidate.id).where('bid_price > 0')
     @asks = TradeOffer.where(closed_at: nil, candidate_id:@candidate.id).where('ask_price > 0')
@@ -123,10 +122,6 @@ class TradesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def trade_params
       params.require(:trade_offer).permit [:candidate_id, :qty_authorized, :bid_price, :ask_price]
-    end
-
-    def force_session
-      session[:user_id] = 1
     end
 
     def trade_offers_path
