@@ -24,7 +24,7 @@ class TradeOffer < ActiveRecord::Base
     transaction_complete = false
     self.transaction do
       self.closed_at = 0.seconds.ago if qty_available == share_count
-      self.qty_available -= share_count
+      self.qty_authorized -= share_count
 
       seller.reserve_debit share_count: share_count, resource_id: candidate_id
       buyer.reserve_credit share_count: share_count, resource_id: candidate_id
