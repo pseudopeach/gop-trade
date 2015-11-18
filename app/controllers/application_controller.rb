@@ -12,7 +12,9 @@ class ApplicationController < ActionController::Base
         session[:user_id] = @user.id
       end
     end
-    unless session[:user_id]
+    if session[:user_id]
+      @user = User.find(session[:user_id])
+    else
       redirect_to '/not-logged-in'
       false
     end

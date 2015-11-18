@@ -3,7 +3,6 @@ class TradesController < ApplicationController
 
 
   def index
-    @user = User.find session[:user_id]
     @open_offers = @user.offers.where(closed_at:nil).includes(:candidate).order(updated_at: :asc)
   end
 
@@ -84,7 +83,7 @@ class TradesController < ApplicationController
       return
     end
 
-    if @trade_offer.execute(qty, User.find(session[:user_id]))
+    if @trade_offer.execute(qty, @user)
       flash[:notice] = 'Trade was successfully executed!'
       respond_to do |format|
         format.html do
@@ -130,7 +129,7 @@ class TradesController < ApplicationController
 
     def set_edit_options
       if candidate_id = params[:selected_candidate]
-        max_sell_qty = User.find(session[:user_id]).reserve_qty resource_id: candidate_id
+        max_sell_qty = @user.reserve_qty resource_id: candidate_id
       end
 
       @candidate_options = Candidate.all.map{|c| [ c.name, c.id]}
