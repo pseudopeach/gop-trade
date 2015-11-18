@@ -62,10 +62,12 @@
       <ul class="trade-list list-group">
         <% @recent_trades.each do |trade| %>
             <li class="list-group-item">
-            <span class="qty"><%= trade.qty %></span>
-            <span> shares @</span>
-            <strong class="price"><%= trade.price_cents %>&cent;</strong> per share
-            <span class="trade-time"><%= trade.executed_at.to_formatted_s(:short) %></span>
+                <span><%= trade.seller.name %> sold </span>
+                <span class="qty"><%= trade.qty %></span>
+                <span> shares to</span>
+                <span><%= trade.buyer.name %></span>
+                <strong class="price">@ <%= trade.price_cents %>&cent;</strong> per share
+                <span class="trade-time"><%= trade.executed_at.to_formatted_s(:short) %></span>
             </li>
         <% end %>
       </ul>

@@ -12,9 +12,11 @@ class TradesController < ApplicationController
     @candidate = Candidate.where(id_name: params[:id_name]).first
     render file: 'public/404', status: :not_found, layout:false unless @candidate
 
-    @recent_trades = Trade.where(candidate_id: @candidate.id).order(executed_at: :desc).limit(10)
+    @recent_trades = Trade.where(candidate_id: @candidate.id).includes(:buyer, :seller).
+        order(executed_at: :desc).limit(10)
 
-    @user_offers = TradeOffer.where(closed_at: nil, offerer_id: session[:user_id], candidate_id: @candidate.id)
+    @user_offers = TradeOffer.where(
+        closed_at: nil, offerer_id: session[:user_id], candidate_id: @candidate.id)
 
     @bids = TradeOffer.where(closed_at: nil, candidate_id:@candidate.id).where('bid_price > 0')
     @asks = TradeOffer.where(closed_at: nil, candidate_id:@candidate.id).where('ask_price > 0')
