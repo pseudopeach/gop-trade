@@ -1,0 +1,40 @@
+<h1>Your Open Offers</h1>
+
+<article class="container">
+  <div class="panel panel-default">
+  <div class="panel-body">
+    <div class="container row">
+        <%= link_to("+ Create a new offer to trade", {action: :new}, {class:'btn-lg btn-info active'}) %>
+    </div>
+
+    <div style="height:30px"></div>
+
+    <ul class="offer-list list-group">
+      <% @open_offers.each do |offer| %>
+          <li class="list-group-item ">
+            <div class="row">
+                <div class="col-sm-8">
+                    <%= offer.ask_price ? "Sell" : "Buy"%>
+                    up to <%= offer.qty_available %> shares of
+                    <strong><%= offer.candidate.id_name %></strong>
+                    for
+                    <strong><%= offer.ask_price || offer.bid_price %></strong>
+                    each
+                </div>
+                <div class="col-sm-4 row">
+                  <div class="col-xs-6">
+                <%= link_to("Update", {action: :edit, id: offer.id},
+                            {class: "btn btn-info active"} ) %>
+                </div><div class="col-xs-6">
+                <%= form_tag({action: :destroy, id: offer.id}, {method:'delete'}) do %>
+                    <%= submit_tag "Retract", data:{confirm:'Cancel offer?'}, class:'btn btn-danger' %>
+                <% end %>
+                </div>
+                </div>
+            </div>
+          </li>
+      <% end %>
+    </ul>
+  </div>
+  </div>
+</article>

@@ -1,0 +1,32 @@
+<style>
+  .candidate-name{
+      font-size: 24px;
+  }
+  .qty{
+      font-size: 30px;
+  }
+</style>
+
+<h1>Your Portfolio</h1>
+
+<article class="container">
+<div class="panel panel-default">
+  <ul class="reserve-list list-group">
+    <% @candidate_reserves.each do |res| %>
+        <li class="list-group-item">
+          <div class="row">
+            <div class="candidate-name col-xs-8">
+              <%= res.resource.name %></span>
+            </div>
+            <div class="qty col-xs-1"><strong><%= res.qty %></strong></div>
+            <div class="col-xs-3">
+                  <%= link_to("Trade!", {controller: :trades, action: :show, id_name: res.resource.id_name},
+                      {class: "btn btn-success active"} ) %>
+            </div>
+          </div>
+        </li>
+    <% end %>
+  </ul>
+  <h2>GOP Bucks <span><%= (@money_reserve.qty/100.0).to_formatted_s(:currency) %></span></h2>
+</div>
+</article>

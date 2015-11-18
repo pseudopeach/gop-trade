@@ -1,0 +1,75 @@
+<h1>Trading for <%= @candidate.name %></h1>
+
+<% if flash[:notice] %>
+    <aside class="container">
+        <div class="alert alert-success container" role="alert"><%= flash[:notice] %></div>
+    </aside>
+<% end %>
+
+<% if flash[:error] %>
+    <aside class="container">
+      <div class="alert alert-danger container" role="alert"><%= flash[:error] %></div>
+    </aside>
+<% end %>
+
+<article class="outstanding-offers container col-md-6">
+  <section class="asks panel panel-default">
+    <div class="panel-heading"><h3>Offers to Sell</h3></div>
+    <div class="panel-body">
+      <p><%= link_to("+ offer your own", {action: :new,
+           selected_candidate: @candidate.id, sell:'yes'}, {class:'btn btn-info active'})  %></p>
+        <ul class="offer-list list-group">
+            <% @asks.each do |offer| %>
+                <%= render 'trades/offer_item', offer: offer %>
+            <% end %>
+        </ul>
+    </div>
+  </section>
+
+  <section class="bids panel panel-default">
+    <div class="panel-heading"><h3>Offers to Buy</h3></div>
+    <div class="panel-body">
+      <p><%= link_to("+ offer to buy", {action: :new,
+           selected_candidate: @candidate.id}, {class:'btn btn-info active'})  %></p>
+        <ul class="offer-list list-group">
+          <% @bids.each do |offer| %>
+              <%= render 'trades/offer_item', offer: offer %>
+          <% end %>
+        </ul>
+    </div>
+  </section>
+</article>
+
+<article class="user-offers  container col-md-6">
+<div class="panel panel-default">
+  <div class="panel-heading"><h3>Your Offers</h3></div>
+  <div class="panel-body">
+      <ul class="offer-list">
+        <% @user_offers.each do |offer| %>
+            <%= render 'trades/offer_item', offer: offer %>
+        <% end %>
+      </ul>
+  </div>
+</div>
+</article>
+
+<article class="recent-trades container col-md-6">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3>Recent Trades</h3>
+  </div>
+  <div class="panel-body">
+      <ul class="trade-list list-group">
+        <% @recent_trades.each do |trade| %>
+            <li class="list-group-item">
+            <span class="qty"><%= trade.qty %></span>
+            <span> shares @</span>
+            <strong class="price"><%= trade.price_cents %>&cent;</strong> per share
+            <span class="trade-time"><%= trade.executed_at.to_formatted_s(:short) %></span>
+            </li>
+        <% end %>
+      </ul>
+  </div>
+</div>
+</article>
+

@@ -1,0 +1,68 @@
+<style>
+
+  .ask-price-wrap, .bid-price-wrap{display:none}
+
+  #buysell_buy:checked ~ .radio-wrap-buy div,
+  #buysell_sell:checked ~ .radio-wrap-sell div{
+      background: #bcbcdc;
+  }
+
+  #buysell_buy:checked ~ .bid-price-wrap,
+  #buysell_sell:checked ~ .ask-price-wrap{
+      display: block;
+  }
+
+  #buysell_buy, #buysell_sell {display:none}
+</style>
+
+
+<article class="container">
+<section class="panel panel-default">
+<div class="panel-body">
+<%= form_for @trade_offer, url: trades_path do |f| %>
+  <% if @trade_offer.errors.any? %>
+    <div id="error_explanation" class="alert alert-danger">
+      <p>There were errors</p>
+
+      <ul>
+      <% @trade_offer.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+      <div class="actions">
+          <%= radio_button_tag("buysell","buy", @is_buying) %>
+          <%= radio_button_tag("buysell","sell", !@is_buying) %>
+          <input name="buysell" type="radio" id="buysell_sell"/>
+          <label class="radio-wrap-buy" for="buysell_buy">
+            <div type="button" class="btn btn-default">Buy</div>
+          </label>
+          <label class="radio-wrap-sell" for="buysell_sell">
+            <div type="button" class="btn btn-default">Sell</div>
+          </label>
+        <div></div>
+        <div class="form-group">
+          <label>Candidate</label>
+          <%= f.select(:candidate_id, @candidate_options, {include_blank: true}, {class:"form-control"}) %>
+        </div>
+
+        <div class="form-group ask-price-wrap">
+          <label>Ask Price (&cent;)</label>
+          <%= f.select('ask_price', @price_options, {}, {class:"form-control"}) %>
+        </div>
+        <div class="form-group bid-price-wrap">
+          <label>Bid Price (&cent;)</label>
+          <%= f.select('bid_price', @price_options, {}, {class:"form-control"}) %>
+        </div>
+
+        <div class="form-group">
+          <label for="trade_offer_qty_available">Number of shares</label>
+          <%= f.select('qty_authorized', @qty_options, {}, {class:"form-control"}) %>
+        </div>
+        <div class="form-group">
+          <%= f.submit "Save Offer", class:'btn-lg btn-success' %>
+        </div>
+      </div>
+<% end %>
+</div></section></article>

@@ -1,0 +1,8 @@
+<ul class="nav nav-tabs">
+  <li role="presentation" <%if params[:controller] == 'portfolios'%>class="active"<% end %>>
+    <%= link_to("Portfolio", {controller: :portfolios}) %>
+  </li>
+  <li role="presentation" <%if params[:controller] == 'trades'%>class="active"<% end %> >
+    <%= link_to("Trade", {controller: :trades}) %>
+  </li>
+</ul>

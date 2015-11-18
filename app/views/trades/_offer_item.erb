@@ -1,0 +1,54 @@
+<li class="list-group-item row">
+  <div class="col-xs-7">
+
+      <span class="offer-text">
+        <strong>
+          <%= offer.offerer_id == session[:user_id] ? 'You ' : 'Someone ' %>
+        </strong>
+
+        <% if offer.ask_price %>
+            selling up to
+            <strong><%= offer.qty_available %></strong>
+            for
+            <strong><%= offer.ask_price %>&cent;</strong>
+            per share
+        <% else %>
+            willing to buy up to
+            <strong><%= offer.qty_available %></strong>
+            @
+            <strong><%= offer.bid_price %>&cent;</strong>
+            per share
+        <% end %>
+      </span>
+
+  </div>
+  <div class="col-xs-1">
+  <% if offer.offerer_id == session[:user_id] %>
+    <%= link_to("Change", {action: :edit, id: offer.id}, {class: "btn btn-success active"}) %>
+  <% else %>
+    <% action_label = offer.ask_price ? 'Buy' : 'Sell' %>
+    <%= form_tag action: 'execute', id:offer.id do %>
+
+        <div class="input-group">
+          <input type="text" name="qty" style="width:70px;" class="form-control"
+          value="<%= offer.qty_available %>"/>
+      <span class="input-group-btn">
+        <!--<input type="submit" value="execute" class="btn btn-success" type="button"/>-->
+        <%= submit_tag "Execute", data:{confirm: "#{action_label} shares of #{@candidate.name}?"},
+                       class:'btn btn-success' %>
+
+      </span>
+        </div><!-- /input-group -->
+
+    <% end %>
+
+    <!--<div class="input-group col">
+        <%= text_field_tag 'qty', nil, value: offer.qty_available, class:'form-control' %>
+        <span class="input-group-btn">
+            <%= submit_tag "Execute", confirm: "#{action_label} shares of #{@candidate.name}?", class:'form-control' %>
+
+        </span>
+    </div>-->
+  <% end %>
+  </div>
+</li>
