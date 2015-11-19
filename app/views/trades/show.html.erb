@@ -1,4 +1,7 @@
-<h1>Trading for <%= @candidate.name %></h1>
+<h1>
+  Trading for <%= @candidate.name %>
+  <%= render 'layouts/price_widget', candidate: @candidate %>
+</h1>
 
 <% if flash[:notice] %>
     <aside class="container">

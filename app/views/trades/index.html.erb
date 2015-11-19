@@ -16,9 +16,12 @@
                 <div class="col-sm-8">
                     <%= offer.ask_price ? "Sell" : "Buy"%>
                     up to <%= offer.qty_available %> shares of
-                    <strong><%= offer.candidate.id_name %></strong>
+                    <strong>
+                      <%= offer.candidate.id_name %>
+                      <%= render 'layouts/price_widget', candidate: offer.candidate %>
+                    </strong>
                     for
-                    <strong><%= offer.ask_price || offer.bid_price %></strong>
+                    <strong><%= offer.ask_price || offer.bid_price %>&cent;</strong>
                     each
                 </div>
                 <div class="col-sm-4 row">

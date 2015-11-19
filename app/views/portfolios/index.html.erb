@@ -16,7 +16,8 @@
         <li class="list-group-item">
           <div class="row">
             <div class="candidate-name col-xs-8">
-              <%= res.resource.name %></span>
+              <%= res.resource.name %>
+              <%= render 'layouts/price_widget', candidate: res.resource %>
             </div>
             <div class="qty col-xs-1"><strong><%= res.qty %></strong></div>
             <div class="col-xs-3">
