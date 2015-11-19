@@ -2,6 +2,13 @@ class User < ActiveRecord::Base
   has_many :reserves, class_name: "Reserve", foreign_key: 'owner_id', inverse_of: :owner
   has_many :offers, class_name: "TradeOffer", foreign_key: 'offerer_id', inverse_of: 'offerer'
 
+  def self.add(name: nil, email:nil)
+    u = User.new name:name, email:email
+    u.save!
+    u.start_season
+    user_mailer.invite_email(u).deliver_now
+  end
+
   def reserve_qty(resource_id: nil)
     if resource_id
 
