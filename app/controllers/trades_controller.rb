@@ -83,7 +83,8 @@ class TradesController < ApplicationController
       return
     end
 
-    if @trade_offer.execute(qty, @user)
+    if (trade = @trade_offer.execute(qty, @user))
+      trade.send_notifications
       flash[:notice] = 'Trade was successfully executed!'
       respond_to do |format|
         format.html do
