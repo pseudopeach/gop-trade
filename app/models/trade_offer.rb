@@ -28,17 +28,24 @@ class TradeOffer < ActiveRecord::Base
       self.qty_authorized -= share_count
       self.qty_available = qty_authorized
 
+      #move the shares
       seller.reserve_debit share_count: share_count, resource_id: candidate_id
       buyer.reserve_credit share_count: share_count, resource_id: candidate_id
 
+      #move the money
       seller.reserve_credit share_count: share_count*price, resource_id: 0
       buyer.reserve_debit share_count: share_count*price, resource_id: 0
 
+      #create the trade record
       trade = Trade.create! qty: share_count, price_cents: price, candidate_id: candidate_id,
                     executed_at: 0.seconds.ago, seller_id: seller.id, buyer_id: buyer.id
 
+      #update offer qtys to make sure they can be covered
       buyer.update_qtys
       seller.update_qtys
+
+      #cache the prices
+      candidate.populate_prices
 
       self.save!
       if qty_available < 0

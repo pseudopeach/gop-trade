@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151118064522) do
+ActiveRecord::Schema.define(version: 20151119153711) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 20151118064522) do
     t.string   "id_name"
     t.string   "name"
     t.datetime "dropped_out_at"
+    t.integer  "latest_price"
+    t.integer  "latest_price_change"
   end
 
   add_index "candidates", ["id_name"], name: "index_candidates_on_id_name", unique: true, using: :btree
@@ -56,6 +58,7 @@ ActiveRecord::Schema.define(version: 20151118064522) do
     t.integer  "qty",          null: false
     t.integer  "price_cents",  null: false
     t.datetime "executed_at"
+    t.datetime "notified_at"
   end
 
   add_index "trades", ["buyer_id"], name: "index_trades_on_buyer_id", using: :btree
