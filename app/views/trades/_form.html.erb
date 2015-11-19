@@ -19,7 +19,9 @@
 <article class="container">
 <section class="panel panel-default">
 <div class="panel-body">
-<%= form_for @trade_offer, url: trades_path do |f| %>
+
+<% form_url = @trade_offer.new_record? ? {action: :create} : {action: :update, id:@trade_offer.id} %>
+<%= form_for @trade_offer, url:form_url do |f| %>
   <% if @trade_offer.errors.any? %>
     <div id="error_explanation" class="alert alert-danger">
       <p>There were errors</p>

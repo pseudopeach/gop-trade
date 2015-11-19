@@ -126,8 +126,8 @@ class TradesController < ApplicationController
       params.require(:trade_offer).permit [:candidate_id, :qty_authorized, :bid_price, :ask_price]
     end
 
-    def trade_offers_path
-      trades_path
+    def trade_offer_path
+      trade_path
     end
 
     def set_edit_options
