@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+          <html>
+          <head>
+          <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<p>Hey <%= @user.name %>!</p>
+
+<p>
+<% if @trade.seller_id == @user.id %>
+      You <b>sold</b> <%= @trade.qty %> shares of <b><%= @trade.candidate.name %></b>
+      to <%= @trade.buyer.name %>.
+<% else %>
+      You <b>bought</b> <%= @trade.qty %> shares of <b><%= @trade.candidate.name %></b>
+      from <%= @trade.buyer.name %>.
+<% end %>
+</p>
+
+<p>You now have <%= @share_count %> shares of <%= @trade.candidate.id_name %>.</p>
+
+<p>
+  Keep up the good work!
+</p>
+
+<p>
+  In case you need it, here's your access link again:<br/>
+<a href="<%= @url %>">gop-trade.herokuapp.com</a>
+</p>
+
+<p>Remember, you don't have to hold all your shares until the end of the season or sell everyone
+that you don't think can win. You can buy shares in a candidate just because you think they'll
+temporarily rise in price only to sell them later. Since you already own shares in each candidate,
+can sell the straight off the bat. Everyone starts with 10 shares in each candidate
+and $10 in GOP Bucks.</p>
+
+<p>Let's get trading!</p>
+<p></p>
+<p>Love, Justin :)</p>
+
+</body>
+</html>

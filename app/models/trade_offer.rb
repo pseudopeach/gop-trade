@@ -22,6 +22,7 @@ class TradeOffer < ActiveRecord::Base
     price = bid_price || ask_price
 
     transaction_complete = false
+    trade = nil
     self.transaction do
       self.closed_at = 0.seconds.ago if qty_available == share_count
       self.qty_authorized -= share_count
@@ -33,7 +34,7 @@ class TradeOffer < ActiveRecord::Base
       seller.reserve_credit share_count: share_count*price, resource_id: 0
       buyer.reserve_debit share_count: share_count*price, resource_id: 0
 
-      Trade.create! qty: share_count, price_cents: price, candidate_id: candidate_id,
+      trade = Trade.create! qty: share_count, price_cents: price, candidate_id: candidate_id,
                     executed_at: 0.seconds.ago, seller_id: seller.id, buyer_id: buyer.id
 
       buyer.update_qtys
@@ -46,7 +47,7 @@ class TradeOffer < ActiveRecord::Base
       transaction_complete = true
     end
 
-    return transaction_complete
+    return transaction_complete ? trade : nil
   end
 
   def close_out
