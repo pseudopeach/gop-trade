@@ -38,9 +38,9 @@ class TradesController < ApplicationController
   # POST /trades.json
   def create
     @trade_offer = TradeOffer.new(trade_params)
-    @trade_offer.offerer_id = session[:user_id]
-    @trade_offer.qty_available = @trade_offer.qty_authorized
+    @trade_offer.offerer = @user
     null_other_price(@trade_offer)
+    @trade_offer.adjust_availability
 
     respond_to do |format|
       if @trade_offer.candidate && @trade_offer.save
@@ -61,10 +61,13 @@ class TradesController < ApplicationController
   # PATCH/PUT /trades/1
   # PATCH/PUT /trades/1.json
   def update
-    @trade_offer.qty_available = @trade_offer.qty_authorized
-    null_other_price(@trade_offer)
+    @new_offer = TradeOffer.new trade_params
+    @new_offer.offerer = @user
+    null_other_price(@new_offer)
+    @new_offer.adjust_availability
+
     respond_to do |format|
-      if @trade_offer.update(trade_params)
+      if @new_offer.usurp @trade_offer
         flash[:notice] = 'Trade was successfully updated.'
         format.html do
           redirect_to controller: :trades, action: :show, id_name:@trade_offer.candidate.id_name
@@ -131,21 +134,16 @@ class TradesController < ApplicationController
     end
 
     def set_edit_options
-      if candidate_id = params[:selected_candidate]
-        max_sell_qty = @user.reserve_qty resource_id: candidate_id
-      end
-
-      @candidate_options = Candidate.all.map{|c| [ c.name, c.id]}
       if @trade_offer.new_record?
         @trade_offer.candidate_id = params[:selected_candidate]
-        @trade_offer.qty_available = max_sell_qty || 1
         @is_buying = params[:sell].nil?
       else
         @is_buying = @trade_offer.bid_price?
       end
-      @qty_options = (1..max_sell_qty || 30).to_a.map{|d| [d, d]}
-      @price_options = (0..100).to_a.map{|d| [d, d]}
 
+      @candidate_options = Candidate.all.map{|c| [ c.name, c.id]}
+      @qty_options = (1..30).to_a.map{|d| [d, d]}
+      @price_options = (0..105).to_a.map{|d| [d, d]}
     end
 
     def null_other_price(offer)

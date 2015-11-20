@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
   has_many :reserves, class_name: "Reserve", foreign_key: 'owner_id', inverse_of: :owner
-  has_many :offers, class_name: "TradeOffer", foreign_key: 'offerer_id', inverse_of: 'offerer'
+  has_many :offers, class_name: "TradeOffer", foreign_key: 'offerer_id', inverse_of: :offerer
 
   def self.add(name: nil, email:nil)
     u = User.new name:name, email:email
@@ -46,20 +46,7 @@ class User < ActiveRecord::Base
   def update_qtys
     qtys_on_hand = reserve_qty
     offers.where(closed_at:nil).each do |offer|
-      if offer.ask_price
-        if offer.qty_available > qtys_on_hand[offer.candidate_id] ||
-            offer.qty_available < offer.qty_authorized
-
-          # for sell offers, make sure there's enough shares to cover
-          offer.qty_available = qtys_on_hand[offer.candidate_id]
-        end
-      else
-        if qtys_on_hand[0] < (offer.qty_available * offer.bid_price) ||
-          offer.qty_available < offer.qty_authorized
-          # make sure there's enough money to cover the buy offers
-          offer.qty_available = qtys_on_hand[0] / offer.bid_price
-        end
-      end
+      offer.adjust_availability owner_share_qty: qtys_on_hand[offer.candidate_id], owner_cash: qtys_on_hand[0]
       offer.save!
     end
   end

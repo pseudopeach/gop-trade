@@ -1,20 +1,21 @@
 <li class="list-group-item row">
   <div class="col-xs-7">
 
+      <% offerer_is_user = (offer.offerer_id == @user.id) %>
       <span class="offer-text">
         <strong>
-          <%= offer.offerer_id == session[:user_id] ? 'You ' : 'Someone ' %>
+          <%= offerer_is_user ? 'You ' : 'Someone ' %>
         </strong>
 
         <% if offer.ask_price %>
             selling up to
-            <strong><%= offer.qty_available %></strong>
+            <strong><%= offerer_is_user ? offer.qty_authorized : offer.qty_available %></strong>
             for
             <strong><%= offer.ask_price %>&cent;</strong>
             per share
         <% else %>
             willing to buy up to
-            <strong><%= offer.qty_available %></strong>
+            <strong><%= offerer_is_user ? offer.qty_authorized : offer.qty_available %></strong>
             @
             <strong><%= offer.bid_price %>&cent;</strong>
             per share

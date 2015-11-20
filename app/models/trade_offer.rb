@@ -1,6 +1,6 @@
 class TradeOffer < ActiveRecord::Base
   attr_accessor :qty_possible
-  belongs_to :offerer, class_name: "User"
+  belongs_to :offerer, class_name: "User", inverse_of: :offers
   belongs_to :candidate
 
   validates_numericality_of :qty_authorized, on: :create, :greater_than_or_equal_to => 1
@@ -57,9 +57,39 @@ class TradeOffer < ActiveRecord::Base
     return transaction_complete ? trade : nil
   end
 
+  def adjust_availability(owner_share_qty:nil, owner_cash:nil)
+    unless owner_share_qty && owner_cash
+      h = offerer.reserve_qty
+      owner_share_qty, owner_cash = h[candidate_id], h[0]
+    end
+    if ask_price
+      if !qty_available || qty_available > owner_share_qty || qty_available < qty_authorized
+
+        # for sell offers, make sure there's enough shares to cover
+        self.qty_available = [owner_share_qty, qty_authorized].min
+      end
+    else
+      if !qty_available || owner_cash < (qty_authorized * bid_price) || qty_available < qty_authorized
+
+        # make sure there's enough money to cover the buy offers
+        self.qty_available = [owner_cash / bid_price, qty_authorized].min
+      end
+    end
+  end
+
   def close_out
     self.closed_at = 0.seconds.ago
     save!
+  end
+
+  def usurp(other_offer)
+    completed = false
+    self.transaction do
+      self.save!
+      other_offer.close_out
+      completed = true
+    end
+    completed
   end
 
   private
