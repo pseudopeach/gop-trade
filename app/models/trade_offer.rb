@@ -10,12 +10,33 @@ class TradeOffer < ActiveRecord::Base
     if bid_price
       buyer = User.find offerer_id
       seller = transacting_user
+      # seller must have enough shares
+      share_count_adj = [transacting_user.reserve_qty(resource_id: candidate_id) , share_count].min
     else
       buyer = transacting_user
       seller = User.find offerer_id
+      # buyer must have enough money
+      share_count_adj = [transacting_user.reserve_qty(resource_id: 0)/ask_price , share_count].min
     end
 
-    generate_trade share_count, buyer: buyer, seller: seller
+    return nil unless share_count_adj > 0
+
+    success = generate_trade share_count_adj, buyer: buyer, seller: seller
+
+    if share_count > share_count_adj && success
+      offer = TradeOffer.from_other self
+      offer.qty_authorized = share_count - share_count_adj
+      offer.adjust_availability
+      offer.save
+    end
+
+    success
+  end
+
+  def self.from_other(other)
+    TradeOffer.new offerer: other.offerer, candidate: other.candidate,
+                       bid_price: other.bid_price, ask_price: other.ask_price
+
   end
 
   def generate_trade(share_count, buyer: nil, seller: nil)
@@ -24,7 +45,7 @@ class TradeOffer < ActiveRecord::Base
     transaction_complete = false
     trade = nil
     self.transaction do
-      self.closed_at = 0.seconds.ago if qty_available == share_count
+      self.closed_at = 0.seconds.ago
       self.qty_authorized -= share_count
       self.qty_available = qty_authorized
 
