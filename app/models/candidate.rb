@@ -15,7 +15,7 @@ class Candidate < ActiveRecord::Base
   def price_chart_data(max_height: 100)
     trade_points = trades.order(:executed_at)
 
-    scale = max_height.to_f / trades.maximum(:price_cents)
+    scale = max_height.to_f / 100
 
     i = 0
     day = trade_points.first.executed_at.at_midnight
