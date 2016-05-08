@@ -1,0 +1,8 @@
+<article class="price-chart container col-md-12">
+  <section class="asks panel panel-default">
+    <div class="panel-heading"><h3>Price Over Time</h3></div>
+      <figure>
+        <% @chart_data.each do |data_el| %><div class="traded" style="height:<%= data_el['price']%>px" ></div><% end %>
+      </figure>
+  </section>
+</article>

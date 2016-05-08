@@ -1,3 +1,20 @@
 // Place all the styles related to the trades controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.price-chart{
+  figure{
+    margin: 20px 0 0;
+  }
+  .traded{
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    background: rgba(255, 200, 200, 0.7);
+    background: -webkit-linear-gradient(rgba(255, 100, 100, 0.7), rgba(255, 150, 150, 0.7));
+    background: -o-linear-gradient(rgba(255, 100, 100, 0.7), rgba(255, 150, 150, 0.7));
+    background: -moz-linear-gradient(rgba(255, 100, 100, 0.7), rgba(255, 150, 150, 0.7));
+    background: linear-gradient(rgba(255, 100, 100, 0.7), rgba(255, 150, 150, 0.7));
+    width: 4px;
+  }
+}

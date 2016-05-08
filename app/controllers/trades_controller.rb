@@ -21,6 +21,8 @@ class TradesController < ApplicationController
     @bids = TradeOffer.where(closed_at: nil, candidate_id:@candidate.id).where('bid_price > 0')
     @asks = TradeOffer.where(closed_at: nil, candidate_id:@candidate.id).where('ask_price > 0')
 
+    @chart_data = @candidate.price_chart_data max_height: 300
+
   end
 
   # GET /trades/new
